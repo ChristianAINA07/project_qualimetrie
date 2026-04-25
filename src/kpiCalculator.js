@@ -27,10 +27,10 @@ function calculateKpi(data) {
   const revenuApresChurn = appliquerPenaliteChurn(nouveauCA, churnRate, mode);
 
   const { revenu, frais } = appliquerFraisServeurs(revenuApresChurn, vues);
-  
+
   return {
     croissance:
-      croissance !== null ? Math.round(croissance * 100) + "%" : "N/A",
+      croissance === null ? "N/A" : Math.round(croissance * 100) + "%",
     statut,
     revenuProjete: Math.round(revenu),
     fraisServeurs: frais,
