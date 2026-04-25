@@ -6,6 +6,7 @@ router.post('/calculate-kpi', (req, res) => {
     try {
         const result = calculateKpi(req.body);
         res.json(result);
+        console.log("Succès")
     } catch (e) {
         res.status(400).json({ error: e.message });
     }

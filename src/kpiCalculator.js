@@ -1,39 +1,35 @@
-function calculateKpi(data) {
-    const { ancienCA, nouveauCA, churnRate, mode, vues } = data;
-    let croissance = 0;
-    let statut = '';
-    let revenuProjete = nouveauCA;
-    let fraisServeurs = 0;
-    if (ancienCA && ancienCA > 0) {
-        croissance = (nouveauCA - ancienCA) / ancienCA;
-        if (croissance > 0.20) {
-            statut = 'Excellent';
-        } else {
-            if (croissance < 0) {
-                statut = 'Critique';
-            } else {
-                statut = 'Normal';
-            }
-        }
-    } else {
-        statut = 'Inconnu';
-    }
-    if (churnRate > 5) {
-        if (mode === 'Startup') {
-            // ignorer la penalite
-        } else {
-            revenuProjete = revenuProjete * 0.90;
-        }
-    }
-    if (vues > 1000000) {
-        fraisServeurs = 500;
-        revenuProjete = revenuProjete - fraisServeurs;
-    }
-    return {
-        croissance: Math.round(croissance * 100) + '%',
-        statut,
-        revenuProjete: Math.round(revenuProjete),
-        fraisServeurs,
-    };
+function calculerCroissance(ancienCA, nouveauCA) {
+if (!ancienCA || ancienCA <= 0) return null;
+return (nouveauCA - ancienCA) / ancienCA;
 }
-module.exports = { calculateKpi };
+function determinerStatut(croissance) {
+if (croissance === null) return 'Inconnu';
+if (croissance > 0.20) return 'Excellent';
+if (croissance < 0) return 'Critique';
+return 'Normal';
+}
+function appliquerPenaliteChurn(revenu, churnRate, mode) {
+if (churnRate <= 5 || mode === 'Startup') return revenu;
+return revenu * 0.90;
+}
+function appliquerFraisServeurs(revenu, vues) {
+if (vues <= 1000000) return { revenu, frais: 0 };
+return { revenu: revenu - 500, frais: 500 };
+}
+function calculateKpi(data) {
+const { ancienCA, nouveauCA, churnRate, mode, vues } = data;
+const croissance = calculerCroissance(ancienCA, nouveauCA);
+const statut = determinerStatut(croissance);
+const revenuApresChurn = appliquerPenaliteChurn(nouveauCA, churnRate, mode);
+const { revenu, frais } = appliquerFraisServeurs(revenuApresChurn, vues);
+return {
+croissance: croissance !== null ? Math.round(croissance*100)+'%' : 'N/A',
+statut,
+revenuProjete: Math.round(revenu),
+fraisServeurs: frais,
+};
+}
+module.exports = {
+calculateKpi, calculerCroissance,
+determinerStatut, appliquerPenaliteChurn, appliquerFraisServeurs
+};
