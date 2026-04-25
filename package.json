@@ -1,0 +1,24 @@
+{
+  "name": "project_qualimetrie",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+"lint": "eslint src/ routes/",
+"test": "jest --coverage --coverageReporters=lcov --coverageReporters=text"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.2.1",
+    "jest": "^30.3.0",
+    "supertest": "^7.2.2"
+  }
+}
